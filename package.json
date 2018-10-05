@@ -1,0 +1,24 @@
+{
+  "name": "plant-watering-server",
+  "version": "1.0.0",
+  "description": "plant watering system server",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.16.3",
+    "pug": "^2.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benfroelich/plant-watering-server.git"
+  },
+  "author": "benny",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/benfroelich/plant-watering-server/issues"
+  },
+  "homepage": "https://github.com/benfroelich/plant-watering-server#readme"
+}
