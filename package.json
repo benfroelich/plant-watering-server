@@ -4,7 +4,11 @@
   "description": "plant watering system server",
   "main": "app.js",
   "dependencies": {
+    "d3": "^5.7.0",
     "express": "^4.16.3",
+    "fs": "0.0.1-security",
+    "lodash": "^4.17.11",
+    "moment": "^2.22.2",
     "pug": "^2.0.3"
   },
   "devDependencies": {},
