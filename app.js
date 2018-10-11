@@ -18,7 +18,7 @@ function getData(path) {
     var csv = d3.csvParse(raw);
     var data = [];
     csv.forEach(function(datum) {
-        data.push({x: moment(datum.timestamp), y: datum.cpu_temperature});
+        data.push({x: datum.timestamp, y: datum.cpu_temperature});
     });
     console.log(`plotting ${data.length} points`);
     return data;
