@@ -4,7 +4,8 @@ const express = require('express'),
       fs = require('fs'),
       d3 = require('d3'),
       _ = require('lodash'),
-      moment = require('moment');
+      moment = require('moment'),
+      mariadb = require('mariadb');
 
 // pug template configuration
 app.set('view engine', 'pug');
@@ -12,31 +13,46 @@ app.set('views', __dirname + '/' + 'views');
 app.use(express.static('scripts'))
 app.locals.pretty = true;
 
-// parse csv datalog
-function getData(path) {
-    var raw = fs.readFileSync(path, 'utf8');
-    var csv = d3.csvParse(raw);
-    var data = [];
-    csv.forEach(function(datum) {
-        data.push({x: datum.timestamp, y: datum.cpu_temperature});
-    });
-    console.log(`plotting ${data.length} points`);
-    return data;
+// MariaDB connection 
+const pool = mariadb.createPool({user:'administrator', password: 'password', database: 'benny', connectionLimit: 5});
+
+async function getData() {
+    let conn, data;
+    try {
+        conn = await pool.getConnection();
+        data = await conn.query("SELECT * from datalog4");
+        data.forEach(function(row) {
+            console.log(row.measurement + " " + row.units);
+        });
+    } catch (err) {
+        throw err;
+    } finally {
+        if (conn) {
+            conn.end();
+            return data;
+        }
+    }
 }
 
 // routes
 app.get('/', (req, res) => {
-    var data;
-    // process the data csv and render
     res.render('stats');
 });
 
-// AJAX for updating plots
-app.get('/refreshData', (req, res) => {
-    console.log('sending new data');
-    res.send(getData('/home/pi/cpu_temp.csv'));
-});
-// start server
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+function handleError(err) {
+    console.log(err);
+    return err;
+}
 
+// AJAX for updating plots
+app.get('/refreshData', async function(req, res) {
+    const data = await getData();
+    console.log("sending data via AJAX");
+    res.send(data);
+});
+
+// start server
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}!`);
+});
 

@@ -1,15 +1,17 @@
-from os.path import expanduser
-home = expanduser("~")
 from gpiozero import CPUTemperature
 from time import sleep, strftime, time
 
-cpu = CPUTemperature()
+import MySQLdb
+db = MySQLdb.connect("localhost", "administrator", "password", "benny")
+curs = db.cursor()
 
-def write_temp(temp):
-    with open(home + "plant-watering-database/cpu_temp.csv", "a") as log:
-        log.write("{0},{1}\n".format(strftime("%Y-%m-%d %H:%M:%S"), str(temp)))
+def log_data(data, sensorName, units):
+    curs.execute("""INSERT INTO datalog4 values(CURRENT_TIMESTAMP, %s, %s, %s)""", (sensorName, data, units))
+    db.commit()
+
+cpu = CPUTemperature()
 
 while True:
     temp = cpu.temperature
-    write_temp(temp)
+    log_data(temp, "cpu_temperature", "degC")
     sleep(1)
