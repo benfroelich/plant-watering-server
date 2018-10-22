@@ -1,10 +1,6 @@
 const express = require('express'),
       app = express(),
       port = 3000,
-      fs = require('fs'),
-      d3 = require('d3'),
-      _ = require('lodash'),
-      moment = require('moment'),
       mariadb = require('mariadb');
 
 // pug template configuration
@@ -20,10 +16,7 @@ async function getData() {
     let conn, data;
     try {
         conn = await pool.getConnection();
-        data = await conn.query("SELECT * from datalog4");
-        data.forEach(function(row) {
-            console.log(row.measurement + " " + row.units);
-        });
+        data = await conn.query("SELECT * from demo");
     } catch (err) {
         throw err;
     } finally {
