@@ -1,18 +1,9 @@
 function updatePlot(newData) {
-    var scatterValues = [];
     console.log(newData);
-    newData.forEach(function(row) {
-        scatterValues.push({y: row.measurement, x: (row.time)});
-    });
-    console.log(scatterValues);
     var ctx = document.getElementById('timePlot').getContext('2d');
     var scatterchart = new Chart(ctx, {
         type: 'line', 
-        data: { 
-            datasets: [
-                { label: 'cpu-temperature', data: scatterValues }
-            ]
-        },
+        data: newData[0],
         options: {
             scales: {
                 xAxes: [{

@@ -13,16 +13,45 @@ app.locals.pretty = true;
 const pool = mariadb.createPool({user:'administrator', password: 'password', database: 'benny', connectionLimit: 5});
 
 async function getData() {
-    let conn, data;
+    let conn, plotData = [];
     try {
         conn = await pool.getConnection();
-        data = await conn.query("SELECT * from demo");
+        sensors = await conn.query("select zone from demo group by zone");
+
+        await Promise.all(sensors.map(async (sensor) => {
+            console.log(sensor);
+            const sensorLogs = await conn.query("select * from demo where zone='" + sensor.zone + "'");
+            // build up data array for chart.js
+            var sensorChartEntry = {
+                yAxis: String, 
+                datasets: {
+                    label: String, 
+                    data: new Array()
+                }
+            };
+
+            sensorLogs.forEach(function(row) {
+                sensorChartEntry.datasets.data.push({
+                    y: row.measurement, x: row.time
+                });
+            });
+
+            sensorChartEntry.datasets.label = sensor.zone;
+            sensorChartEntry.yAxis = sensor.zone + " (" 
+                + sensor.units + ")";
+            
+            plotData.push(sensorChartEntry);
+            console.log(sensorChartEntry);
+        
+        }));
     } catch (err) {
         throw err;
     } finally {
         if (conn) {
             conn.end();
-            return data;
+            console.log("plotData:");
+            console.log(plotData);
+            return plotData;
         }
     }
 }
