@@ -1,9 +1,10 @@
 function updatePlot(newData) {
+    console.log('New Data:');
     console.log(newData);
     var ctx = document.getElementById('timePlot').getContext('2d');
     var scatterchart = new Chart(ctx, {
         type: 'line', 
-        data: newData[0],
+        data: newData,
         options: {
             scales: {
                 xAxes: [{

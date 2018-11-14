@@ -13,36 +13,31 @@ app.locals.pretty = true;
 const pool = mariadb.createPool({user:'administrator', password: 'password', database: 'benny', connectionLimit: 5});
 
 async function getData() {
-    let conn, plotData = [];
+    let conn, plotData = {datasets: []};
     try {
         conn = await pool.getConnection();
         sensors = await conn.query("select zone from demo group by zone");
 
         await Promise.all(sensors.map(async (sensor) => {
-            console.log(sensor);
             const sensorLogs = await conn.query("select * from demo where zone='" + sensor.zone + "'");
-            // build up data array for chart.js
-            var sensorChartEntry = {
-                yAxis: String, 
-                datasets: {
-                    label: String, 
-                    data: new Array()
-                }
+            // build up data skeleton
+            var entry = {
+                label: sensor.zone, 
+                data: []
             };
 
+            // insert data
             sensorLogs.forEach(function(row) {
-                sensorChartEntry.datasets.data.push({
+                entry.data.push({
                     y: row.measurement, x: row.time
                 });
             });
 
-            sensorChartEntry.datasets.label = sensor.zone;
-            sensorChartEntry.yAxis = sensor.zone + " (" 
-                + sensor.units + ")";
+           // entry.label = new String(sensor.zone);
+          //  sensorChartEntry.yAxis = sensor.zone + " (" 
+          //      + sensor.units + ")";
             
-            plotData.push(sensorChartEntry);
-            console.log(sensorChartEntry);
-        
+            plotData.datasets.push(entry);
         }));
     } catch (err) {
         throw err;
