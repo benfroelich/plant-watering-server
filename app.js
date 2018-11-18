@@ -22,7 +22,8 @@ async function getData() {
             const sensorLogs = await conn.query("select * from demo where zone='" + sensor.zone + "'");
             // build up data skeleton
             var entry = {
-                label: sensor.zone, 
+                label: sensor.zone,
+                yAxis: sensorLogs[0].units,
                 data: []
             };
 
@@ -33,10 +34,6 @@ async function getData() {
                 });
             });
 
-           // entry.label = new String(sensor.zone);
-          //  sensorChartEntry.yAxis = sensor.zone + " (" 
-          //      + sensor.units + ")";
-            
             plotData.datasets.push(entry);
         }));
     } catch (err) {
