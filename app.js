@@ -1,3 +1,6 @@
+// use dotenv for configs in development
+require('dotenv').config();
+
 const express = require('express'),
       app = express(),
       port = 3000,
@@ -9,8 +12,14 @@ app.set('views', __dirname + '/' + 'views');
 app.use(express.static('scripts'))
 app.locals.pretty = true;
 
+console.log(process.env);
 // MariaDB connection 
-const pool = mariadb.createPool({user:'administrator', password: 'password', database: 'benny', connectionLimit: 5});
+const pool = mariadb.createPool({
+    user: process.env.DB_USER, 
+    password: process.env.DB_PASSWORD, 
+    database: process.env.DB,
+    connectionLimit: 5
+});
 
 async function getData() {
     let conn, plotData = {datasets: []};
