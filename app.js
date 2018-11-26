@@ -12,7 +12,6 @@ app.set('views', __dirname + '/' + 'views');
 app.use(express.static('scripts'))
 app.locals.pretty = true;
 
-console.log(process.env);
 // MariaDB connection 
 const pool = mariadb.createPool({
     user: process.env.DB_USER, 
@@ -25,10 +24,12 @@ async function getData() {
     let conn, plotData = {datasets: []};
     try {
         conn = await pool.getConnection();
-        sensors = await conn.query("select zone from demo group by zone");
+        sensors = await conn.query("select zone from " + process.env.DATALOG_TABLE + 
+            " group by zone");
 
         await Promise.all(sensors.map(async (sensor) => {
-            const sensorLogs = await conn.query("select * from demo where zone='" + sensor.zone + "'");
+            const sensorLogs = await conn.query("select * from " + process.env.DATALOG_TABLE 
+                + " where zone='" + sensor.zone + "'");
             // build up data skeleton
             var entry = {
                 label: sensor.zone,
