@@ -20,7 +20,7 @@ const pool = mariadb.createPool({
     connectionLimit: 5
 });
 
-async function getData() {
+async function getData(params) {
     let conn, plotData = {datasets: []};
     try {
         conn = await pool.getConnection();
@@ -29,7 +29,8 @@ async function getData() {
 
         await Promise.all(sensors.map(async (sensor) => {
             const sensorLogs = await conn.query("select * from " + process.env.DATALOG_TABLE 
-                + " where zone='" + sensor.zone + "'");
+                + " where zone='" + sensor.zone + "' and time between '"
+                + params.min + "' and '" + params.max + "'");
             // build up data skeleton
             var entry = {
                 label: sensor.zone,
@@ -70,7 +71,7 @@ function handleError(err) {
 
 // AJAX for updating plots
 app.get('/refreshData', async function(req, res) {
-    const data = await getData();
+    const data = await getData(req.query);
     console.log("sending data via AJAX");
     res.send(data);
 });

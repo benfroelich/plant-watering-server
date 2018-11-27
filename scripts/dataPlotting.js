@@ -1,6 +1,8 @@
 function updatePlots(newData) {
     console.log('New Data:');
     console.log(newData);
+    
+    
     // wipe out existing plots (ya not efficient I know)
     $("canvas").remove();
     newData.datasets.forEach(function(sensor, i) {
@@ -9,8 +11,6 @@ function updatePlots(newData) {
         canvas.setAttribute('id', "chart-" + i);
         document.body.appendChild(canvas);
         
-        console.log("sensor: " + sensor);
-        console.log(sensor);
         // add data
         var context = canvas.getContext('2d');
         var config = {
@@ -24,7 +24,7 @@ function updatePlots(newData) {
             options: {
                 scales: {
                     xAxes: [{
-                        type: 'time'
+                        type: 'time',
                     }],
                     yAxes: [{
                         display: true,
@@ -39,12 +39,19 @@ function updatePlots(newData) {
         var scatterchart = new Chart(context, config);
     });
 }
-
+// todo - limit based on date range
 function getAndPlotData() {
-    $.get('/refreshData', {}, function(newData) {
+    const min = document.getElementById('minDate').value,
+          max = document.getElementById('maxDate').value;
+    console.log("updating limits: " + min + " - " + max);
+    $.get('/refreshData', {min: min, max: max}, function(newData) {
         updatePlots(newData);
     });
 }
+
+$('#scale').click(function() {
+   // todo 
+});
 
 // use AJAX route to update plot data
 $('#refresh').click(function() {
