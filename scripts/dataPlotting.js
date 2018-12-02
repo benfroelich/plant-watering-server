@@ -41,8 +41,18 @@ function updatePlots(newData) {
 }
 // todo - limit based on date range
 function getAndPlotData() {
-    const min = document.getElementById('minDate').value,
-          max = document.getElementById('maxDate').value;
+    var min = new Date(document.getElementById('minDate').value),
+        max = new Date(document.getElementById('maxDate').value);
+    // display the past month worth of data if nothing entered
+    if(!(max instanceof Date && !isNaN(max))) {
+        max = new Date();
+        document.getElementById('maxDate').value = max.toDateString(); 
+    }
+    if(!(min instanceof Date && !isNaN(min))) {
+        min = new Date();
+        min.setMonth(max.getMonth() - 1);
+        document.getElementById('minDate').value = min.toDateString();
+    }
     console.log("updating limits: " + min + " - " + max);
     $.get('/refreshData', {min: min, max: max}, function(newData) {
         updatePlots(newData);
@@ -51,6 +61,8 @@ function getAndPlotData() {
 
 $('#scale').click(function() {
    // todo 
+   // determine if more data needed
+    // if needed, get and plot data, otherwise zoom
 });
 
 // use AJAX route to update plot data

@@ -1,5 +1,6 @@
 // use dotenv for configs in development
 require('dotenv').config();
+var dateFormat = require('dateformat');
 
 const express = require('express'),
       app = express(),
@@ -26,11 +27,14 @@ async function getData(params) {
         conn = await pool.getConnection();
         sensors = await conn.query("select zone from " + process.env.DATALOG_TABLE + 
             " group by zone");
-
+        const formatString = "yyyy-mm-dd dd:mm:ss"
         await Promise.all(sensors.map(async (sensor) => {
-            const sensorLogs = await conn.query("select * from " + process.env.DATALOG_TABLE 
+            const queryString = 
+                "select * from " + process.env.DATALOG_TABLE 
                 + " where zone='" + sensor.zone + "' and time between '"
-                + params.min + "' and '" + params.max + "'");
+                + dateFormat(params.min, formatString) + "' and '" 
+                + dateFormat(params.max, formatString) + "'";
+            const sensorLogs = await conn.query(queryString);
             // build up data skeleton
             var entry = {
                 label: sensor.zone,
