@@ -1,12 +1,13 @@
-// use dotenv for configs in development
-require('dotenv').config();
-var dateFormat = require('dateformat');
+var fs          = require('fs'),
+    config      = require('ini'),
+    dateFormat  = require('dateformat');
 
 const express = require('express'),
       app = express(),
       port = 3000,
       mariadb = require('mariadb');
 
+require('dotenv').config();
 // pug template configuration
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/' + 'views');
@@ -15,9 +16,9 @@ app.locals.pretty = true;
 
 // MariaDB connection 
 const pool = mariadb.createPool({
-    user: process.env.DB_USER, 
-    password: process.env.DB_PASSWORD, 
-    database: process.env.DB,
+    user: process.env.PLANT_WATERING_DB_USER, 
+    password: process.env.PLANT_WATERING_DB_PWD, 
+    database: process.env.PLANT_WATERING_DB,
     connectionLimit: 5
 });
 
@@ -25,12 +26,13 @@ async function getData(params) {
     let conn, plotData = {datasets: []};
     try {
         conn = await pool.getConnection();
-        sensors = await conn.query("select zone from " + process.env.DATALOG_TABLE + 
+        sensors = await conn.query("select zone from " + 
+            process.env.PLANT_WATERING_DB_TABLE + 
             " group by zone");
         const formatString = "yyyy-mm-dd dd:mm:ss"
         await Promise.all(sensors.map(async (sensor) => {
             const queryString = 
-                "select * from " + process.env.DATALOG_TABLE 
+                "select * from " + process.env.PLANT_WATERING_DB_TABLE 
                 + " where zone='" + sensor.zone + "' and time between '"
                 + dateFormat(params.min, formatString) + "' and '" 
                 + dateFormat(params.max, formatString) + "'";

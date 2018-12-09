@@ -1,5 +1,10 @@
-import MySQLdb
-db = MySQLdb.connect("localhost", "administrator", "password", "benny")
+import MySQLdb, os
+
+db = MySQLdb.connect( \
+        os.environ["PLANT_WATERING_DB_HOST"], \
+        os.environ["PLANT_WATERING_DB_USER"], \
+        os.environ["PLANT_WATERING_DB_PW"], \
+        os.environ["PLANT_WATERING_DB"])
 curs = db.cursor()
 
 # wipe out existing data

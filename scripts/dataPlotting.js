@@ -2,8 +2,7 @@ function updatePlots(newData) {
     console.log('New Data:');
     console.log(newData);
     
-    
-    // wipe out existing plots (ya not efficient I know)
+    // wipe out existing plots 
     $("canvas").remove();
     newData.datasets.forEach(function(sensor, i) {
         // add DOM element
@@ -39,7 +38,7 @@ function updatePlots(newData) {
         var scatterchart = new Chart(context, config);
     });
 }
-// todo - limit based on date range
+
 function getAndPlotData() {
     var min = new Date(document.getElementById('minDate').value),
         max = new Date(document.getElementById('maxDate').value);
