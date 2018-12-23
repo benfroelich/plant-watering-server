@@ -1,4 +1,7 @@
-import MySQLdb, os
+import MySQLdb, os, sys
+
+if os.environ["PLANT_WATERING_ENVIRONMENT"] != "development":
+    sys.exit("error, must use development configuration")
 
 db = MySQLdb.connect( \
         os.environ["PLANT_WATERING_DB_HOST"], \
@@ -8,11 +11,10 @@ db = MySQLdb.connect( \
 curs = db.cursor()
 
 # wipe out existing data
-curs.execute("""TRUNCATE TABLE demo""")
-        
-curs.executemany(
-    """INSERT INTO demo (time, zone, measurement, units)
-    VALUES(%s, %s, %s, %s)""",
+curs.execute("TRUNCATE TABLE {}".format(os.environ["PLANT_WATERING_DB_TABLE"]))
+
+sqlstring = "INSERT INTO {} (time, id, measurement, units)".format(os.environ["PLANT_WATERING_DB_TABLE"]) + " VALUES(%s, %s, %s, %s)"
+curs.executemany(sqlstring,
     [
     ("2018-10-16 20:00:37", "fern_moisture", 423, "counts"),    
     ("2018-10-16 20:15:37", "fern_moisture", 428, "counts"),    
