@@ -17,7 +17,7 @@ app.locals.pretty = true;
 // MariaDB connection 
 const pool = mariadb.createPool({
     user: process.env.PLANT_WATERING_DB_USER, 
-    password: process.env.PLANT_WATERING_DB_PWD, 
+    password: process.env.PLANT_WATERING_DB_PW, 
     database: process.env.PLANT_WATERING_DB,
     connectionLimit: 5
 });
@@ -26,20 +26,20 @@ async function getData(params) {
     let conn, plotData = {datasets: []};
     try {
         conn = await pool.getConnection();
-        sensors = await conn.query("select zone from " + 
+        sensors = await conn.query("select id from " + 
             process.env.PLANT_WATERING_DB_TABLE + 
-            " group by zone");
+            " group by id");
         const formatString = "yyyy-mm-dd dd:mm:ss"
         await Promise.all(sensors.map(async (sensor) => {
-            const queryString = 
+            let queryString = 
                 "select * from " + process.env.PLANT_WATERING_DB_TABLE 
-                + " where zone='" + sensor.zone + "' and time between '"
+                + " where id='" + sensor.id + "' and time between '"
                 + dateFormat(params.min, formatString) + "' and '" 
                 + dateFormat(params.max, formatString) + "'";
-            const sensorLogs = await conn.query(queryString);
+            let sensorLogs = await conn.query(queryString);
             // build up data skeleton
             var entry = {
-                label: sensor.zone,
+                label: sensor.id,
                 yAxis: sensorLogs[0].units,
                 data: []
             };
@@ -54,6 +54,7 @@ async function getData(params) {
             plotData.datasets.push(entry);
         }));
     } catch (err) {
+        console.log(err.message);
         throw err;
     } finally {
         if (conn) {
@@ -76,10 +77,16 @@ function handleError(err) {
 }
 
 // AJAX for updating plots
-app.get('/refreshData', async function(req, res) {
-    const data = await getData(req.query);
-    console.log("sending data via AJAX");
-    res.send(data);
+app.get('/refreshData', function(req, res) {
+    getData(req.query).then(
+      function(data) { // success
+        console.log("sending data via AJAX");
+        res.send(data);
+      },
+      function(err) { // error
+          console.log(err.message);
+          res.send({status: "failed"});
+      });
 });
 
 // start server
