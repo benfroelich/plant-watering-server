@@ -29,6 +29,7 @@ async function getData(params) {
         sensors = await conn.query("select id from " + 
             process.env.PLANT_WATERING_DB_TABLE + 
             " group by id");
+        console.log(sensors);
         const formatString = "yyyy-mm-dd dd:mm:ss"
         await Promise.all(sensors.map(async (sensor) => {
             let queryString = 
@@ -37,6 +38,7 @@ async function getData(params) {
                 + dateFormat(params.min, formatString) + "' and '" 
                 + dateFormat(params.max, formatString) + "'";
             let sensorLogs = await conn.query(queryString);
+            
             // build up data skeleton
             var entry = {
                 label: sensor.id,

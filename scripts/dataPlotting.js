@@ -37,6 +37,16 @@ function updatePlots(newData) {
         }
         var scatterchart = new Chart(context, config);
     });
+
+    // send message if no data was found
+    if(newData.datasets.length == 0)
+    {
+        console.log("empty dataset");
+        document.getElementById('status').innerHTML = 
+            'no data found, try different dates?';
+    } else {
+        document.getElementById('status').innerHTML = '';
+    }
 }
 
 function getAndPlotData() {
