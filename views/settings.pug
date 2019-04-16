@@ -1,0 +1,12 @@
+html
+    head
+    body
+        h1 Plant Watering Control Panel
+        form(action="/settings" method="POST")
+            for ch, i in settings
+                div
+                    input(type="text" required name="settings["+i+"][name]" value=ch.name)
+                    input(type="text" required name="settings["+i+"][interval_days]" value=ch.interval_days)
+                    input(type="text" required name="settings["+i+"][duration_mins]" value=ch.duration_mins)
+            div
+                button(type="submit") Update

@@ -7,6 +7,11 @@ const express = require('express'),
       port = 3000,
       mariadb = require('mariadb');
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const settingsPath = '../control/settings.json';
+
 require('dotenv').config();
 // pug template configuration
 app.set('view engine', 'pug');
@@ -71,6 +76,29 @@ async function getData(params) {
 // routes
 app.get('/', (req, res) => {
     res.render('stats');
+});
+
+function loadSettings() {
+    let settings = JSON.parse(fs.readFileSync('../control/settings.json'));
+    console.log("loaded settings:");
+    console.log(settings);
+    return settings;
+}
+
+function updateSettings(settings) {
+    let data = JSON.stringify(settings, null, 2);
+    fs.writeFileSync(settingsPath, data);
+}
+
+app.get('/settings', (req, res) => {
+    res.render('settings', loadSettings());
+});
+
+app.post('/settings', (req, res) => {
+    console.log("new settings:");
+    console.log(req.body);
+    updateSettings(req.body);
+    res.redirect('/settings');
 });
 
 function handleError(err) {
