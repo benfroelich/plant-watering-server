@@ -16,6 +16,9 @@ require('dotenv').config();
 // pug template configuration
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/' + 'views');
+// tell the express framework that the css is in the public directory
+app.use(express.static(__dirname + "/public"));
+// client-side scripts are in the scrits directory
 app.use(express.static('scripts'))
 app.locals.pretty = true;
 
@@ -79,14 +82,22 @@ app.get('/', (req, res) => {
 });
 
 function loadSettings() {
-    let settings = JSON.parse(fs.readFileSync('../control/settings.json'));
+    const settings = JSON.parse(fs.readFileSync('../control/settings.json'));
     console.log("loaded settings:");
     console.log(settings);
     return settings;
 }
 
+// the settings passed back from the html form are only 
+// encoded as strings
 function updateSettings(settings) {
-    let data = JSON.stringify(settings, null, 2);
+    settings.settings.forEach(function(ch) {
+        ch.interval_days = Number(ch.interval_days);
+        ch.duration_mins = Number(ch.duration_mins);
+        ch.thresh_pct = Number(ch.thresh_pct);
+    });
+    
+    const data = JSON.stringify(settings, null, 2);
     fs.writeFileSync(settingsPath, data);
 }
 

@@ -30,3 +30,5 @@ coverage
 benchmarks/graphs
 
 *.swp
+
+public/semantic

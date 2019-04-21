@@ -1,16 +1,19 @@
-html
-    head
-        script(src="moment.js")
-        script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js")
-        script(src="https://code.jquery.com/jquery-3.3.1.min.js"
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous")
-    body
-        h1 Plant Watering Log
-        p Hi there!
-        <button id="refresh">refresh data</button>
-        <input type="text" id="minDate" placeholder="min time"></input>
-        <input type="text" id="maxDate" placeholder="max time"></input>
-        <button id="scale">update limits</button>
-        <p id="status">enter dates and click refresh data</p>
-    script(src="dataPlotting.js")
+include partials/header.pug
+div(class="main ui container")
+  h1 Plant Watering Plots
+  div(class="ui labeled input")
+    div(class="ui label") from:
+    input(type="date" id="minDate" placeholder="min date")
+  div(class="ui labeled input")
+    div(class="ui label") to:
+    input(type="date" id="maxDate" placeholder="max time")
+  button(class="ui button primary" id="refresh") Load Data
+  div(id="status-message" class="ui visible icon message")
+    i(id="status-message-loading" class="spinner loading icon")
+    div(class="content")
+      h2(id="status-message-text")
+  div(class="ui container" id="plots")
+
+script(src="moment.js")
+script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js")
+script(src="dataPlotting.js")
