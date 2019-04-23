@@ -89,7 +89,7 @@ function loadSettings() {
 }
 
 // the settings passed back from the html form are only 
-// encoded as strings
+// encoded as strings. numeric conversion is handled here
 function updateSettings(settings) {
     settings.settings.forEach(function(ch) {
         ch.interval_days = Number(ch.interval_days);
@@ -100,6 +100,10 @@ function updateSettings(settings) {
     const data = JSON.stringify(settings, null, 2);
     fs.writeFileSync(settingsPath, data);
 }
+
+app.get('/help', (req, res) => {
+    res.render('help');
+});
 
 app.get('/settings', (req, res) => {
     res.render('settings', loadSettings());
@@ -126,7 +130,7 @@ app.get('/refreshData', function(req, res) {
       },
       function(err) { // error
           console.log(err.message);
-          res.send({status: "failed"});
+          res.send({status: "failed", reason: err.message});
       });
 });
 

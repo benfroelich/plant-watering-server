@@ -1,0 +1,44 @@
+include partials/header.pug
+div(class="main ui container")
+  h1 Help
+  h3 Introduction
+  p.
+    This system controls 4 sensor/watering channels.
+    Data is stored and made available in 
+    <a href="/">Plots</a>
+  h3 Settings
+  p
+    | Configure how and when watering occurs in the 
+    | <a href="/settings">control panel</a>.
+  p 
+    | Channels can operate in either of two modes:
+  ul
+    li
+      | Open-loop mode: watering will occur at the specified interval 
+      | regardless of soil moisture. Use this if you don't have a soil
+      | moisture sensor installed, or only want to collect data and not
+      | use it for watering.
+    li
+      | Closed-loop mode: watering will occur at the same intervals and 
+      | quantity as in open-loop mode, but watering will be bypassed if 
+      | the soil moisture percentage is above a threshold. This makes the
+      | system adapt to rainy or humid weather.
+  h3 Hardware
+  h4 Water control outputs
+  p.
+    You can control a small electrical pump or valve operating on up to 
+    250VAC or 30VDC. Each power control output is fused at 2A; loads 
+    should draw less than 1A while operating.
+  h4 Sensors
+  p.
+    The sensors are waterproofed. Insert them in the soil as close to the 
+    marker as possible. The deeper the sensor is in the soil, the better 
+    the readings will be.
+  h4 Controller
+  p.
+    The controller must be within range of your wifi router to access
+    the control panel or view data.
+  p.
+    The controller requires 120VAC at all times.
+    
+

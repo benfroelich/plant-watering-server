@@ -5,25 +5,43 @@ div(class="main ui container")
     form(class="ui form" action="/settings" method="POST")
       for ch, i in settings
         h3(class="ui dividing header")="Channel " + i + " Settings"
-        div(class="fields")
+        div(class="field")
+          label Name
+          input(type="text" required name="settings["+i+"][name]" value=ch.name 
+                data-content="a descriptive name for this channel")
+        div(class="three fields")
           div(class="field")
-            label Channel Name
-            input(type="text" required name="settings["+i+"][name]" 
-                  value=ch.name)
-          div(class="field")
-            label Watering Interval (days):
+            label Interval (days): 
             input(type="number" required 
                   name="settings["+i+"][interval_days]" value=ch.interval_days
-                  min="0.25" max="365" step="any")
+                  min="1" max="365" step="1" 
+                  data-content="how many days to go between waterings")
           div(class="field")
-            label Watering Duration (minutes):
+            label Duration (minutes):
             input(type="number" required 
                   name="settings["+i+"][duration_mins]" value=ch.duration_mins
-                  min="0" max="10" step="any")
+                  min="0" max="10" step="any"
+                  data-content="how long to water in minutes")
           div(class="field")
+            label Watering Time:
+            input(type="time" required
+                  name="settings["+i+"][time_of_day]" value=ch.time_of_day
+                  data-content="what time of day to water")
+        div(class="ui segment")
+          div(class="field")
+            div(class="ui toggle checkbox")
+              input(type="checkbox" tabindex="0" class="thresh_en" name="settings["+i+"][thresh_en]" 
+                    data-content="use moisture sensor to determine whether watering is needed"
+                    checked=settings[i]["thresh_en"] == 'on' ? true : false)
+              label Enable Moisture Threshold
+        div(class="fields")
+          div(class="field hideable_moisture hideable_moisture_"+i)
             label Moisture Threshold (%):
             input(type="number" required 
                   name="settings["+i+"][thresh_pct]" value=ch.thresh_pct
-                  min="0" max="100" step="any")
+                  min="0" max="100" step="any"
+                  data-content="only water when soil moisture is below this threshold")
       div
         button(type="submit" class="ui primary button" tabindex="0") Update
+
+script(src="settingsMenu.js") 

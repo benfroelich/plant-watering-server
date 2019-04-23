@@ -2,5 +2,5 @@
 cd /home/pi
 source .bashrc
 cd plant-watering/server
-/usr/local/bin/nodemon app.js
+/usr/local/bin/node app.js
 
