@@ -55,7 +55,9 @@ function createPlots(data) {
                     data: sensor.data,
                     label: sensor.label,
                     lineTension: 0,
-                    fill: false
+                    fill: false,
+                    backgroundColor: "window.chartColors.blue",
+                    borderColor: "window.chartColors.blue",
                 }]
             },
             options: {
