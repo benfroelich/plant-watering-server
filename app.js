@@ -22,13 +22,15 @@ app.use(express.static(__dirname + "/public"));
 app.use(express.static('scripts'))
 app.locals.pretty = true;
 
-// MariaDB connection 
-const pool = mariadb.createPool({
+const mariadbConnection = {
     user: process.env.PLANT_WATERING_DB_USER, 
     password: process.env.PLANT_WATERING_DB_PW, 
     database: process.env.PLANT_WATERING_DB,
     connectionLimit: 5
-});
+};
+
+// MariaDB connection 
+const pool = mariadb.createPool(mariadbConnection);
 
 async function getData(params) {
     let conn, plotData = {datasets: []};
@@ -38,7 +40,7 @@ async function getData(params) {
             process.env.PLANT_WATERING_DB_TABLE + 
             " group by id");
         console.log(sensors);
-        const formatString = "yyyy-mm-dd dd:mm:ss"
+        const formatString = "yyyy-mm-dd hh:mm:ss"
         await Promise.all(sensors.map(async (sensor) => {
             let queryString = 
                 "select * from " + process.env.PLANT_WATERING_DB_TABLE 
@@ -46,7 +48,7 @@ async function getData(params) {
                 + dateFormat(params.min, formatString) + "' and '" 
                 + dateFormat(params.max, formatString) + "'";
             let sensorLogs = await conn.query(queryString);
-            
+            console.log(queryString);
             // build up data skeleton
             var entry = {
                 label: sensor.id,
@@ -69,8 +71,6 @@ async function getData(params) {
     } finally {
         if (conn) {
             conn.end();
-            console.log("plotData:");
-            console.log(plotData);
             return plotData;
         }
     }
@@ -136,6 +136,6 @@ app.get('/refreshData', function(req, res) {
 
 // start server
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}!`);
+    console.log(`plant watering server listening on port ${port}!`);
 });
 
