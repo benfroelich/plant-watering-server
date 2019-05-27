@@ -38,46 +38,35 @@ function updatePlots(newData) {
 
 function createPlots(data) {
     // wipe out existing plots 
-    $("canvas").remove();
-    
+    $(".chart").remove();
+    // TODO? reset synchronizer
+
+    let charts = [];
     data.datasets.forEach(function(sensor, i) {
         // add DOM element
-        let canvas = document.createElement("canvas");
-        canvas.setAttribute('id', "chart-" + i);
-        $("#plots").append(canvas);
+        let div = document.createElement("div");
+        let title = document.createElement("div");
+        title.innerHTML = sensor.label;
         
-        // add data
-        var context = canvas.getContext('2d');
-        var config = {
-            type: 'line',
-            data: {
-                datasets: [{
-                    data: sensor.data,
-                    label: sensor.label,
-                    lineTension: 0,
-                    fill: false,
-                    backgroundColor: "window.chartColors.blue",
-                    borderColor: "window.chartColors.blue",
-                }]
-            },
-            options: {
-                animation: false,
-                scales: {
-                    xAxes: [{
-                        type: 'time',
-                    }],
-                    yAxes: [{
-                        display: true,
-                        scaleLabel: {
-                            display: true,
-                            labelString: sensor.yAxis
-                        }
-                    }]
-                }
-            }
-        }
-        var scatterchart = new Chart(context, config);
+        div.setAttribute('id', "div-chart-" + i);
+        div.className += " chart";
+
+        $("#plots").append(title);
+        $("#plots").append(div);
+
+        let gData = [];
+        sensor.data.forEach(function(point, i) {
+            gData.push([new Date(point.x), point.y]);
+        });
+        g = new Dygraph(div, gData, {
+            labels: ["time", sensor.yAxis],
+        });
+        charts.push(g);
     });
+    
+    // synchronize the charts
+//    let sync = Dygraph.synchronize(charts);
+
 }
 
 function getAndPlotData() {

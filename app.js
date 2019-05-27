@@ -19,7 +19,9 @@ app.set('views', __dirname + '/' + 'views');
 // tell the express framework that the css is in the public directory
 app.use(express.static(__dirname + "/public"));
 // client-side scripts are in the scrits directory
-app.use(express.static('scripts'))
+app.use(express.static('scripts'));
+// dygraphs
+app.use(express.static('node_modules/dygraphs/dist'));
 app.locals.pretty = true;
 
 const mariadbConnection = {
