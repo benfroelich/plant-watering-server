@@ -39,15 +39,18 @@ function updatePlots(newData) {
 function createPlots(data) {
     // wipe out existing plots 
     $(".chart").remove();
+    $(".chartTitle").remove();
     // TODO? reset synchronizer
 
     let charts = [];
     data.datasets.forEach(function(sensor, i) {
         // add DOM element
         let div = document.createElement("div");
-        let title = document.createElement("div");
-        title.innerHTML = sensor.label;
+        let title = document.createElement("h2");
         
+        title.innerHTML = sensor.label;
+        title.className += " chartTitle";
+
         div.setAttribute('id', "div-chart-" + i);
         div.className += " chart";
 
