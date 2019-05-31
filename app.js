@@ -10,7 +10,7 @@ const express = require('express'),
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const settingsPath = '../control/settings.json';
+const settingsPath = __dirname + '/../control/settings.json';
 
 require('dotenv').config();
 // pug template configuration
@@ -19,9 +19,11 @@ app.set('views', __dirname + '/' + 'views');
 // tell the express framework that the css is in the public directory
 app.use(express.static(__dirname + "/public"));
 // client-side scripts are in the scrits directory
-app.use(express.static('scripts'));
+app.use(express.static(__dirname + '/scripts'));
 // dygraphs
-app.use(express.static('node_modules/dygraphs/dist'));
+app.use(express.static(__dirname + '/node_modules/dygraphs/dist'));
+// dygraphs synchronization
+app.use(express.static(__dirname + '/node_modules/dygraphs/src/extras'));
 app.locals.pretty = true;
 
 const mariadbConnection = {
@@ -42,7 +44,7 @@ async function getData(params) {
             process.env.PLANT_WATERING_DB_TABLE + 
             " group by id");
         console.log(sensors);
-        const formatString = "yyyy-mm-dd hh:mm:ss"
+        const formatString = "yyyy-mm-dd HH:MM:ss"
         await Promise.all(sensors.map(async (sensor) => {
             let queryString = 
                 "select * from " + process.env.PLANT_WATERING_DB_TABLE 
@@ -84,7 +86,7 @@ app.get('/', (req, res) => {
 });
 
 function loadSettings() {
-    const settings = JSON.parse(fs.readFileSync('../control/settings.json'));
+    const settings = JSON.parse(fs.readFileSync(settingsPath));
     console.log("loaded settings:");
     console.log(settings);
     return settings;
@@ -93,11 +95,14 @@ function loadSettings() {
 // the settings passed back from the html form are only 
 // encoded as strings. numeric conversion is handled here
 function updateSettings(settings) {
-    settings.settings.forEach(function(ch) {
+    settings.channels.forEach(function(ch) {
         ch.interval_days = Number(ch.interval_days);
         ch.duration_mins = Number(ch.duration_mins);
         ch.thresh_pct = Number(ch.thresh_pct);
     });
+
+    settings.moisture_interval_minutes = 
+        Number(settings.settings.moisture_interval_minutes);
     
     const data = JSON.stringify(settings, null, 2);
     fs.writeFileSync(settingsPath, data);
