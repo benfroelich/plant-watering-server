@@ -102,7 +102,7 @@ function updateSettings(settings) {
     });
 
     settings.moisture_interval_minutes = 
-        Number(settings.settings.moisture_interval_minutes);
+        Number(settings.moisture_interval_minutes);
     
     const data = JSON.stringify(settings, null, 2);
     fs.writeFileSync(settingsPath, data);

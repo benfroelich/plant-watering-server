@@ -3,10 +3,10 @@ div(class="main ui container")
   h1 Plant Watering Plots
   div(class="ui labeled input")
     div(class="ui label") from:
-    input(type="date" id="minDate" placeholder="min date")
+    input(type="datetime-local" id="minDate" placeholder="min date")
   div(class="ui labeled input")
     div(class="ui label") to:
-    input(type="date" id="maxDate" placeholder="max time")
+    input(type="datetime-local" id="maxDate" placeholder="max time")
   button(class="ui button primary" id="refresh") Load Data
   div(id="status-message" class="ui visible icon message")
     i(id="status-message-loading" class="spinner loading icon")
@@ -16,5 +16,5 @@ div(class="main ui container")
 
 script(src="moment.js")
 script(src="dygraph.js")
-//script(src="extras/synchronizer.js")
+script(src="synchronizer.js")
 script(src="dataPlotting.js")
