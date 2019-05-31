@@ -68,8 +68,13 @@ function createPlots(data) {
     });
     
     // synchronize the charts
-//    let sync = Dygraph.synchronize(charts);
+    let sync = Dygraph.synchronize(charts);
 
+}
+
+function formatForDateTime(date)
+{
+    return moment(date).format("YYYY-MM-DDTHH:mm:ss");
 }
 
 function getAndPlotData() {
@@ -81,12 +86,12 @@ function getAndPlotData() {
     // display the past month worth of data if nothing entered
     if(!(max instanceof Date && !isNaN(max))) {
         max = new Date();
-        document.getElementById('maxDate').value = moment(max).format("YYYY-MM-DD"); 
+        document.getElementById('maxDate').value = formatForDateTime(max);
     }
     if(!(min instanceof Date && !isNaN(min))) {
         min = new Date();
         min.setMonth(max.getMonth() - 1);
-        document.getElementById('minDate').value = moment(min).format("YYYY-MM-DD");
+        document.getElementById('minDate').value = formatForDateTime(min);
     }
     console.log("updating limits: " + min + " - " + max);
     $.get('/refreshData', {min: min, max: max}, function(newData) {
