@@ -22,7 +22,7 @@ function updatePlots(newData) {
     if(newData.hasOwnProperty("status")) {
         if(status == "failed") {
             updateStatusIndicator("error getting data, please "
-                + "contact Benny. " + newData.reason);
+                + "contact support. " + newData.reason);
         }
     } else if(newData.hasOwnProperty("datasets"))
     {
@@ -83,14 +83,14 @@ function getAndPlotData() {
 
     updateStatusIndicator('loading data', true);
 
-    // display the past month worth of data if nothing entered
+    // display the past 3 days of data if nothing entered
     if(!(max instanceof Date && !isNaN(max))) {
         max = new Date();
         document.getElementById('maxDate').value = formatForDateTime(max);
     }
     if(!(min instanceof Date && !isNaN(min))) {
         min = new Date();
-        min.setMonth(max.getMonth() - 1);
+        min.setDate(min.getDate() - 3);
         document.getElementById('minDate').value = formatForDateTime(min);
     }
     console.log("updating limits: " + min + " - " + max);
