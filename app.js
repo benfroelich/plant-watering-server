@@ -2,6 +2,7 @@ var fs          = require('fs'),
     config      = require('ini'),
     dateFormat  = require('dateformat');
 
+const { PerformanceObserver, performance } = require('perf_hooks');
 const express = require('express'),
       app = express(),
       port = 3000,
@@ -38,13 +39,19 @@ const pool = mariadb.createPool(mariadbConnection);
 
 async function getData(params) {
     let conn, plotData = {datasets: []};
+    const t0 = performance.now();
     try {
         conn = await pool.getConnection();
-        sensors = await conn.query("select id from " + 
-            process.env.PLANT_WATERING_DB_TABLE + 
-            " group by id");
-        console.log(sensors);
         const formatString = "yyyy-mm-dd HH:MM:ss"
+        sensors = await conn.query("select distinct id from " + 
+            process.env.PLANT_WATERING_DB_TABLE + 
+            " where time between '"
+            + dateFormat(params.min, formatString) + "' and '" 
+            + dateFormat(params.max, formatString) + "'"
+        );
+        const t1 = performance.now();
+        console.log("getting sensor names took " + (t1 - t0) + "ms");
+        console.log(sensors);
         await Promise.all(sensors.map(async (sensor) => {
             let queryString = 
                 "select * from " + process.env.PLANT_WATERING_DB_TABLE 
@@ -53,6 +60,10 @@ async function getData(params) {
                 + dateFormat(params.max, formatString) + "'";
             let sensorLogs = await conn.query(queryString);
             console.log(queryString);
+            
+            const t2 = performance.now();
+            console.log("getting data for " + sensor.id + " took " + (t2 - t1) + "ms");
+            
             // build up data skeleton
             var entry = {
                 label: sensor.id,
@@ -75,6 +86,8 @@ async function getData(params) {
     } finally {
         if (conn) {
             conn.end();
+            const t3 = performance.now();
+            console.log("all done at " + (t3 - t0) + "ms");
             return plotData;
         }
     }
