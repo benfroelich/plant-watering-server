@@ -3,12 +3,19 @@ div(class="main ui container")
   h1(class="ui center aligned header") Plant Watering Control Panel
   div(class="ui container")
     form(class="ui form" action="/settings" method="POST")
+
       h3(class="ui dividing header") General Settings
       div(class="three wide field")
         label Moisture logging interval
         input(type="number" required name="moisture_interval_minutes"
               value=moisture_interval_minutes min="1" max="60" step="1"
               data-content="how often to log the moisture on all channels in minutes")
+      div(class="three wide field")
+        label Reservoir Monitoring Interval 
+        input(type="number" required name="reservoir[interval_minutes]"
+              value=reservoir.interval_minutes min="1" max="360" step="1"
+              data-content="how often to check water reservoir ")
+      
       for ch, i in channels
         h3(class="ui dividing header")="Channel " + i + " Settings"
         div(class="field")

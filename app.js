@@ -114,6 +114,9 @@ function updateSettings(settings) {
         ch.thresh_pct = Number(ch.thresh_pct);
     });
 
+    settings.reservoir.interval_minutes = 
+        Number(settings.reservoir.interval_minutes);
+    
     settings.moisture_interval_minutes = 
         Number(settings.moisture_interval_minutes);
     
