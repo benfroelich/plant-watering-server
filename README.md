@@ -1,1 +1,1 @@
-express web app and data parser for raspberry pi temperature monitor
+express web app and data parser for raspberry pi plant-watering system
