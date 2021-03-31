@@ -108,10 +108,12 @@ function loadSettings() {
 // the settings passed back from the html form are only 
 // encoded as strings. numeric conversion is handled here
 function updateSettings(settings) {
-    settings.channels.forEach(function(ch) {
-        ch.interval_days = Number(ch.interval_days);
-        ch.duration_mins = Number(ch.duration_mins);
-        ch.thresh_pct = Number(ch.thresh_pct);
+    settings.zones.forEach(function(z) {
+        z.interval_days = Number(z.interval_days);
+        z.duration_mins = Number(z.duration_mins);
+        z.thresh_pct = Number(z.thresh_pct);
+        z.in_ch = Number(z.in_ch);
+        z.out_ch = Number(z.out_ch);
     });
 
     settings.reservoir.interval_minutes = 

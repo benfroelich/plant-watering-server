@@ -5,56 +5,92 @@ div(class="main ui container")
     form(class="ui form" action="/settings" method="POST")
 
       h3(class="ui dividing header") General Settings
-      div(class="three wide field")
-        label Moisture logging interval
-        input(type="number" required name="moisture_interval_minutes"
-              value=moisture_interval_minutes min="1" max="60" step="1"
-              data-content="how often to log the moisture on all channels in minutes")
-      div(class="three wide field")
-        label Reservoir Monitoring Interval 
-        input(type="number" required name="reservoir[interval_minutes]"
-              value=reservoir.interval_minutes min="1" max="360" step="1"
-              data-content="how often to check water reservoir ")
-      
-      for ch, i in channels
-        h3(class="ui dividing header")="Channel " + i + " Settings"
+      div(class="two fields")
         div(class="field")
-          label Name
-          input(type="text" required name="channels["+i+"][name]" value=ch.name
-                data-content="a descriptive name for this channel")
-        div(class="three fields")
-          div(class="field")
-            label Interval (days): 
-            input(type="number" required 
-                  name="channels["+i+"][interval_days]" value=ch.interval_days
-                  min="1" max="365" step="1" 
-                  data-content="how many days to go between waterings")
-          div(class="field")
-            label Duration (minutes):
-            input(type="number" required 
-                  name="channels["+i+"][duration_mins]" value=ch.duration_mins
-                  min="0" max="120" step="any"
-                  data-content="how long to water in minutes")
-          div(class="field")
-            label Watering Time:
-            input(type="time" required
-                  name="channels["+i+"][time_of_day]" value=ch.time_of_day
-                  data-content="what time of day to water")
-        div(class="ui segment")
-          div(class="field")
-            div(class="ui toggle checkbox")
-              input(type="checkbox" tabindex="0" class="thresh_en" name="channels["+i+"][thresh_en]" 
-                    data-content="use moisture sensor to determine whether watering is needed"
-                    checked=channels[i]["thresh_en"] == 'on' ? true : false)
-              label Enable Moisture Threshold
-        div(class="fields")
-          div(class="field hideable_moisture hideable_moisture_"+i)
-            label Moisture Threshold (%):
-            input(type="number" required 
-                  name="channels["+i+"][thresh_pct]" value=ch.thresh_pct
-                  min="0" max="100" step="any"
-                  data-content="only water when soil moisture is below this threshold")
-      div
+          label Moisture logging interval
+          input(type="number" required name="moisture_interval_minutes"
+                value=moisture_interval_minutes min="1" max="60" step="1"
+                data-content="how often to log the moisture on all channels in minutes")
+        div(class="field")
+          label Reservoir Monitoring Interval 
+          input(type="number" required name="reservoir[interval_minutes]"
+                value=reservoir.interval_minutes min="1" max="360" step="1"
+                data-content="how often to check water reservoir ")
+      div(class="zones")
+        for ch, i in zones
+          fieldset(class="zone")
+            h3(class="ui dividing header")="Zone '" + ch.name + "' Settings"
+            div(class="field")
+              label Name
+              input(type="text" required name="zones["+i+"][name]" value=ch.name
+                    data-content="a descriptive name for this zone")
+  
+            div(class="channels two fields")
+              div(class="field")
+                label Input Channel:
+                input(type="number" pattern="[0-9]*" inputmode="numeric"
+                      required name="zones["+i+"][in_ch]" value=ch.in_ch
+                       min="0" max="2" step="1"
+                      data-content="which sensor to use")
+              div(class="field")
+                label Output Channel:
+                input(type="number" pattern="[0-9]*" inputmode="numeric"
+                      required name="zones["+i+"][out_ch]" 
+                      value=ch.out_ch
+                      min="0" max="3" step="1"
+                      data-content="which output to use")
+            div(class="two fields")
+              div(class="field")
+                label Interval (days): 
+                input(type="number" required 
+                      name="zones["+i+"][interval_days]" value=ch.interval_days
+                      min="1" max="365" step="1" 
+                      data-content="how many days to go between waterings")
+              div(class="field")
+                label Duration (minutes):
+                input(type="number" required 
+                      name="zones["+i+"][duration_mins]" value=ch.duration_mins
+                      min="0" max="120" step="any"
+                      data-content="how long to water in minutes")
+            div(class="field")
+              fieldset(class="watering_times")
+                label Watering Time(s):
+                button(type="button" class="circular ui icon button add_time")
+                  i(class="icon plus")
+                button(type="button" class="circular ui icon button remove_time")
+                  i(class="icon minus")
+                for t, j in ch.time_of_day
+                  input(type="time" required
+                    name="zones[" + i + "][time_of_day][" + j + "]" value=t
+                    data-content="what time of day to water"
+                    class="watering_time")
+            div(class="ui segment")
+              div(class="field")
+                div(class="ui toggle checkbox")
+                  input(type="checkbox" tabindex="0" class="thresh_en" name="zones["+i+"][thresh_en]" 
+                        data-content="use moisture sensor to determine whether watering is needed"
+                        checked=zones[i]["thresh_en"] == 'on' ? true : false)
+                  label Enable Moisture Threshold
+            div(class="fields")
+              div(class="field hideable_moisture hideable_moisture_"+i)
+                label Moisture Threshold (%):
+                input(type="number" required 
+                      name="zones["+i+"][thresh_pct]" value=ch.thresh_pct
+                      min="0" max="100" step="any"
+                      data-content="only water when soil moisture is below this threshold")
+            div(class="ui")
+              button(type="button" class="circular ui icon button remove_zone")
+                i(class="icon delete")
+                labels Delete
+              div(class="ui toggle checkbox")
+                input(type="checkbox" tabindex="1" name="zones["+i+"][zone_en]" 
+                      data-content="use moisture sensor to determine whether watering is needed"
+                      checked=zones[i]["zone_en"] == 'on' ? true : false)
+                label Enable Zone
+      div(class="ui segment")
+        button(type="button" class="circular ui icon button add_zone")
+          label add zone
+          i(class="icon plus")
         button(type="submit" class="ui primary button" tabindex="0") Update
 
 script(src="settingsMenu.js") 
