@@ -59,9 +59,9 @@ div(class="main ui container")
                   i(class="icon plus")
                 button(type="button" class="circular ui icon button remove_time")
                   i(class="icon minus")
-                for t, j in ch.time_of_day
+                for time, j in ch.time_of_day
                   input(type="time" required
-                    name="zones[" + i + "][time_of_day][" + j + "]" value=t
+                    name="zones[" + i + "][time_of_day][" + j + "]" value=time
                     data-content="what time of day to water"
                     class="watering_time")
             div(class="ui segment")

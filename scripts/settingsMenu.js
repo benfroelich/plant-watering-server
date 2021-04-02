@@ -18,6 +18,7 @@ $(".zones").on("click", "button.add_time", function() {
     if(times.length < 4)
     {
         times.last().clone().insertAfter(times.last());
+		updateTimeIndeces();
     }
 });
 $(".zones").on("click", "button.remove_time", function() {
@@ -49,3 +50,13 @@ function updateZoneIndeces() {
         $(this).find(".hideable_moisture").addClass("hideable_moisture_" + index);
     });
 }
+
+function updateTimeIndeces() {
+	$(".zone").each(function(index, zone)  {    
+		$(this).find(".watering_time").each(function(inner_index, elem) {
+			elem.name = elem.name.replace(/(^zones\[\d+\]\[time_of_day\])\[(\d+)\]/, "$1[" + inner_index + "]");
+		});
+	});
+}
+
+
