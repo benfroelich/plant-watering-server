@@ -141,6 +141,10 @@ app.post('/settings', (req, res) => {
     res.redirect('/settings');
 });
 
+app.get('/diagnostics', (req, res) => {
+    res.render('diagnostics');
+});
+
 function handleError(err) {
     console.log(err);
     return err;
