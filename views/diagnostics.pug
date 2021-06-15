@@ -1,7 +1,8 @@
 include partials/header.pug
 div(class="main ui container")
   h1 Diagnostics
-  button(class="ui button primary" id="refresh") toggle pump 1
+  for ch, i in output
+    button(class="ui button primary" id="refresh") toggle pump i
 
 //script(src="moment.js")
 //script(src="dygraph.js")

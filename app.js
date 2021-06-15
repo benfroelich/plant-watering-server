@@ -1,6 +1,7 @@
 var fs          = require('fs'),
     config      = require('ini'),
-    dateFormat  = require('dateformat');
+    dateFormat  = require('dateformat')
+    manual_control = require('./manual-controller-interface');
 
 const { PerformanceObserver, performance } = require('perf_hooks');
 const express = require('express'),
@@ -141,8 +142,24 @@ app.post('/settings', (req, res) => {
     res.redirect('/settings');
 });
 
-app.get('/diagnostics', (req, res) => {
-    res.render('diagnostics');
+app.get('/diagnostics', async (req, res) => {
+    try {
+        data = await manual_control.getStatus();
+        res.render('diagnostics', data);
+    } catch (error) {
+        console.log(error)
+        //return next(error);
+    }
+});
+
+app.get('/diagnostics-update', async (req, res) => {
+    try {
+        data = await manual_control.getStatus();
+        res.send(data);
+    } catch (error) {
+        console.log(error)
+        //return next(error);
+    }
 });
 
 function handleError(err) {
