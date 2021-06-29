@@ -4,6 +4,8 @@
   "description": "plant watering system server",
   "main": "app.js",
   "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-react-app": "^3.1.2",
     "d3": "^5.16.0",
     "dateformat": "^3.0.3",
     "dotenv": "^6.2.0",

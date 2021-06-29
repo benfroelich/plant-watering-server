@@ -4,8 +4,15 @@ div(class="main ui container")
   for ch, i in output
     button(class="ui button primary" id="refresh") toggle pump i
 
+<div id="like_button_container"></div>
+
+
 //script(src="moment.js")
 //script(src="dygraph.js")
 //script(src="synchronizer.js")
+<!-- Load React. -->
+<!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+script(src="https://unpkg.com/react@17/umd/react.development.js" crossorigin)
+script(src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin)
 script(src="diagnostics.js")
 

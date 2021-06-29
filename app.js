@@ -20,7 +20,7 @@ app.set('view engine', 'pug');
 app.set('views', __dirname + '/' + 'views');
 // tell the express framework that the css is in the public directory
 app.use(express.static(__dirname + "/public"));
-// client-side scripts are in the scrits directory
+// client-side scripts are in the scripts directory
 app.use(express.static(__dirname + '/scripts'));
 // dygraphs
 app.use(express.static(__dirname + '/node_modules/dygraphs/dist'));
